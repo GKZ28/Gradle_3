@@ -59,7 +59,6 @@ public class CardOrderTestNotAllFields {
             WebElement successMessage = driver.findElement(By.cssSelector("[data-test-id='order-success']"));
             assertFalse(successMessage.isDisplayed());
         } catch (org.openqa.selenium.NoSuchElementException e) {
-            // Success message is not displayed, which is expected
         }
     }
 }
