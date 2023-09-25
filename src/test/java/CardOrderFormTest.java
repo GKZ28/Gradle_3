@@ -1,3 +1,5 @@
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -8,8 +10,10 @@ import static org.junit.Assert.assertTrue;
 
 public class CardOrderFormTest {
 
-    @Test
-    public void testCardOrderForm() {
+    private WebDriver driver;
+
+    @Before
+    public void setUp() {
         // Указываем путь к драйверу браузера (Chrome)
         System.setProperty("webdriver.chrome.driver", "D:\\Download\\chromedriver_win32(1)\\chromedriver.exe");
 
@@ -19,8 +23,18 @@ public class CardOrderFormTest {
         options.addArguments("--disable-gpu"); // Эти параметры могут варьироваться в зависимости от версии Chrome
 
         // Инициализация WebDriver с настройками
-        WebDriver driver = new ChromeDriver(options);
+        driver = new ChromeDriver(options);
+    }
 
+    @After
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    @Test
+    public void testCardOrderForm() {
         // Открываем страницу
         driver.get("http://localhost:9999");
 
@@ -38,8 +52,5 @@ public class CardOrderFormTest {
         // Проверяем сообщение об успешной отправке заявки
         WebElement successMessage = driver.findElement(By.cssSelector("[data-test-id='order-success']"));
         assertTrue(successMessage.isDisplayed());
-
-        // Закрываем браузер
-        driver.quit();
     }
 }
