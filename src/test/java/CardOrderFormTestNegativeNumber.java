@@ -1,20 +1,23 @@
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertFalse;
 
 public class CardOrderFormTestNegativeNumber {
 
-    public static void main(String[] args) {
+    @Test
+    public void testInvalidPhoneNumber() {
         // Указываем путь к драйверу браузера (Chrome)
         System.setProperty("webdriver.chrome.driver", "D:\\Download\\chromedriver_win32(1)\\chromedriver.exe");
 
         // Настройка для включения headless-режима
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
-        options.addArguments("--disable-gpu"); // Эти параметры могут варьироваться в зависимости от версии Chrome
+        options.addArguments("--disable-gpu");
 
         // Инициализация WebDriver с настройками
         WebDriver driver = new ChromeDriver(options);
@@ -35,7 +38,7 @@ public class CardOrderFormTestNegativeNumber {
 
         // Проверяем, что сообщение об успешной отправке не отображается
         WebElement successMessage = driver.findElement(By.cssSelector("[data-test-id='order-success']"));
-        assertTrue(!successMessage.isDisplayed());
+        assertFalse(successMessage.isDisplayed());
 
         // Закрываем браузер
         driver.quit();
