@@ -1,56 +1,50 @@
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CardOrderFormTest {
 
     private WebDriver driver;
 
-    @Before
-    public void setUp() {
-        // Указываем путь к драйверу браузера (Chrome)
-        System.setProperty("webdriver.chrome.driver", "D:\\Download\\chromedriver_win32(1)\\chromedriver.exe");
-
-        // Настройка для включения headless-режима
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        options.addArguments("--disable-gpu"); // Эти параметры могут варьироваться в зависимости от версии Chrome
-
-        // Инициализация WebDriver с настройками
-        driver = new ChromeDriver(options);
+    @BeforeAll
+    public static void setupAll() {
+        WebDriverManager.chromedriver().setup();
     }
 
-    @After
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+    @BeforeEach
+    public void beforeEach() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--headless");
+        driver = new ChromeDriver(options);
+        driver.get("http://localhost:9999");
+    }
+
+    @AfterEach
+    public void afterEach() {
+        driver.quit();
+        driver = null;
     }
 
     @Test
     public void testCardOrderForm() {
-        // Открываем страницу
-        driver.get("http://localhost:9999");
+        // driver.get("http://localhost:9999");
 
-        // Заполняем поля формы
-        WebElement nameInput = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
-        WebElement phoneInput = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
-        WebElement agreementCheckbox = driver.findElement(By.cssSelector("[data-test-id='agreement']"));
-        WebElement submitButton = driver.findElement(By.cssSelector("[data-test-id='submit']"));
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Иванов Иван Иванович");
+        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+78005555555");
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click();
+        driver.findElement(By.cssSelector("button.button")).click();
+        var actualText = driver.findElement(By.cssSelector("[data-test-id=order-success]")).getText().trim();
+        assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", actualText);
 
-        nameInput.sendKeys("Иван Иванов");
-        phoneInput.sendKeys("+79123456789");
-        agreementCheckbox.click();
-        submitButton.click();
-
-        // Проверяем сообщение об успешной отправке заявки
-        WebElement successMessage = driver.findElement(By.cssSelector("[data-test-id='order-success']"));
-        assertTrue(successMessage.isDisplayed());
     }
 }
